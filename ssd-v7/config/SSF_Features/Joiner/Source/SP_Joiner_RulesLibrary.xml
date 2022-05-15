@@ -7,9 +7,6 @@
     </ReferencedRules>
 	<Source>
 	<![CDATA[
-	
-	
-	
 	import sailpoint.api.SailPointFactory;
 	import sailpoint.api.SailPointContext;
 	import sailpoint.api.Provisioner;
