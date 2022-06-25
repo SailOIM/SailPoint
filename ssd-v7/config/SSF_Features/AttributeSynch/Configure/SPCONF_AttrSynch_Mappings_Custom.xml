@@ -6,7 +6,7 @@
 		
 			<!--  Enter the Trigger Type.  
 					Options Include:
-						- Selector:  Will dynamically re-evaluate all target attributes and update as necessary.
+						- Selector:  Will dynamically re-evaluate all target attributes and update as necessary. okkok
 						- Compare Links:  Will review the links defined in the Compare Links entry below.  If any schema attributes
 							have changed from the previous to the new identity, the workflow will launch.   
 						- Custom Rule:  Will call the method isAttrSynchCustomTriggerRule in 
