@@ -1,0 +1,450 @@
+README for 8.2p1
+Release Notes
+
+Release: 8.2
+Patch: 1
+
+Patch Deliverable:
+
+  identityiq-8.2p1.jar
+
+General Information:
+
+  IdentityIQ 8.2p1 is a patch for IdentityIQ 8.2.  All patches are cumulative,
+  so this patch includes all changes from previously released patches for
+  IdentityIQ 8.2.
+
+  If you are deploying IdentityIQ using a war file, you will need to
+  update the war file contents with those from this patch using the
+  following sample commands as a guide.  Place identityiq.war and
+  identityiq-8.2p1.jar in the current working directory and use the
+  following commands to update the war file:
+
+    mkdir iiq-8.2p1
+    cd iiq-8.2p1
+    jar xf ../identityiq-8.2p1.jar
+    jar uf ../identityiq.war *
+
+Installation Instructions:
+
+  1. Stop the application server (or the IdentityIQ application
+     if supported by the application server).
+
+  2. Un-jar the IdentityIQ patch in the IdentityIQ installation
+     directory.
+
+  3. Using a database client, execute the
+     upgrade_identityiq_tables-8.2p1 DDL script in WEB-INF/database
+     that is appropriate for your database type.   The database scripts are
+     cumulative, so you will receive errors for the schema changes that have
+     already been applied in previous patches.
+
+  4. Apply the patch by using a command line interface to execute the command
+     "iiq patch 8.2p1" (without the quotes) from the WEB-INF/bin directory.
+
+  5. Start the application server (or the IdentityIQ application if
+     supported by the application server).
+
+Upgrade Considerations:
+
+  - This patch contains a fix for the configuration of the Hibernate L2 cache. 
+    In the 8.2 GA release, the ehcache jar files were updated to the 3.8.1 version. 
+    These updated jar files now use the jcache (JSR-107) specification to 
+    interface with Hibernate. This change in the interface with Hibernate and 
+    the L2 cache caused the ehcache configuration using the ehcache.xml file to no 
+    longer work. This caused the objects being stored in the L2 cache to have an 
+    unlimited TTL and objects changed on one server would not always be reflected 
+    on other IIQ UI and Task servers. This fix includes an update to 
+    hibernate.cfg.xml file to specify the ehcache.xml file to use for the ehcache 
+    configuration. Also, the ehcache.xml file was updated to use the JSR-107 
+    specification format. All default values that were in the file before still 
+    remain the same, but the format of the file has changed. If any customizations 
+    have been made to either of these files, then care needs to be taken when 
+    upgrading.
+
+  - The escapeHTML utility method is now restored to the Velocity spTools.
+
+  - The IQService version must match the IdentityIQ server version including
+    the major release and patch versions. When one is upgraded, the other must
+    be upgraded as well so that the version and patch levels match. For more
+    information on upgrading the IQService, see the IdentityIQ Installation
+    Guide's chapter on upgrading.
+
+  - New Connectivity
+    - MEDITECH Connector
+      - A new connector, “MEDITECH”, is now available for healthcare customers.
+        The connector provides a deep integration for healthcare enterprises,
+        using MEDITECH Expanse, to govern deeply across its businesses. The
+        integration involves management of Accounts and Roles, thus empowering
+        healthcare enterprises to take informed decisions.
+
+  - Enhanced Connectivity
+    - AWS Integration
+      - Supports IAM Role authentication method to connect to native AWS system
+      - Supports aggregating tags on IAM entities
+    - Azure Active Directory Connector
+      - Supports managing Channels in Microsoft Teams. For more information,
+        see the latest Connectors Administration and Configuration Guide.
+    - Connector Bundles
+      - All connector bundles and their dependencies are now packaged as fat
+        jars and jars present in lib-connectors directory are now deleted.
+    - G Suite Connector
+      - Enhanced to optimize the performance of delta aggregation
+    - RSA Connector
+      - Supports partitioned aggregation
+    - ServiceNow Connector
+      - Supports aggregating and provisioning dot-walking fields on reference
+        tables when configured in the schema
+    - SCIM 2.0 Connector
+      - Supports non-compliant SCIM 2.0 server
+    - Workday Connector
+      - Supports aggregating and updating CUSTOM IDs (Other IDs)
+      - Supports OAuth 2.0 authentication with refresh token grant type
+    - Workday Accounts Connector
+      - Supports OAuth 2.0 authentication with refresh token grant type
+    - Web Services Connector
+      - Supports configuring operation endpoints using cURL command quickly
+    - Unix (AIX, Linux, and Solaris) Connectors
+      - Supports aggregating data using SFTP file transport protocol
+
+  - New Platform Support
+    - Linux Connector
+      - Supports Red Hat Enterprise Linux versions 7.8, 7.9, and 8.3
+    - Microsoft SQL Server Connector
+      - Supports Microsoft SQL Server installed on Linux
+    - HCL (Lotus) Domino Connector
+      - Supports HCL Domino version 11 and 12
+    - IdentityIQ Service Desk Integration
+      - Supports Micro Focus Service Manager version 9.7
+
+  - Dropped Platform Support
+    - Linux Connector
+      - No longer supports Red Hat Enterprise Linux versions 7.6, 7.5, 7.4,
+        7.3, 7.2, 7.1, 7.0, 6.9, 6.8, and 6.7
+    - SailPoint Identity Governance Connector for ServiceNow
+      - No longer supports ServiceNow New York release
+    - IdentityIQ for ServiceNow Service Desk
+      - No longer supports ServiceNow New York release
+
+Issues Resolved:
+
+  CONCHENAB-4087  
+    The Workday connector now supports aggregate and update of CUSTOM IDs (Other 
+    IDs).
+  CONCHENAB-4103  
+    The Oracle Identity Manager client now supports HTTPS protocol.
+  CONCHENAB-4117  
+    The Workday connector now supports OAuth2 authentication with grant type 
+    refresh token.
+  CONCHENAB-4122  
+    The Workday Account connector now supports OAuth2 authentication with grant 
+    type refresh token.
+  CONCHENAB-4150  
+    The SCIM 2.0 connector now supports non-compliant SCIM 2.0 server.
+  CONCHENAB-4165  
+    The Oracle Identity Manager connector now handles IndexOutOfBoundException 
+    gracefully
+  CONCHENAB-4196  
+    The Linux Connector now supports Red Hat Enterprise Linux versions 7.8, 7.9 
+    and 8.3.
+  CONDOCS-231 
+    Microsoft SQL Server Connector now supports Microsoft SQL Server installed on 
+    Linux.
+  CONDOCS-329 
+    Linux Connector no longer supports Red Hat Enterprise Linux versions 7.6, 7.5, 
+    7.4, 7.3, 7.2, 7.1, 7.0, 6.9, 6.8, and 6.7.
+  CONDOCS-348 
+    The SailPoint Identity Governance Connector for ServiceNow no longer 
+    supports the ServiceNow New York release.
+  CONDOCS-349 
+    The IdentityIQ for ServiceNow Service Desk no longer supports the 
+    ServiceNow New York release.
+  CONETN-3107 
+    The PeopleSoft HRMS Connector can now aggregate users correctly when a SQL 
+    query contains a question mark.
+  CONETN-3425 
+    The Workday Connector no longer aggregates workers beyond the offset specified 
+    in Past_Terminated_Offset attribute of the application.
+  CONETN-3446 
+    The Workday connector now returns a complete ResourceObject for a future dated 
+    account when an account aggregation is performed.
+  CONETN-3451 
+    The SQL Loader connector no longer fails when connecting to a target system 
+    with credentials having special characters.
+  CONETN-3453 
+    The SAP GRC Connector no longer fails with a NullPointerException when 
+    aggregating accounts having an empty user id.
+  CONETN-3463 
+    The SharePoint Online connector now shows actual error message in the task 
+    result when error code 400 is returned during aggregation.
+  CONETN-3465 
+    The Oracle Fusion HCM Connector now aggregates all accounts updated by the 
+    supported Oracle Fusion HCM feeds when a delta aggregation is performed.
+  CONETN-3468 
+    The LDAP Connector now considers the "searchScope" configuration for searchDNs 
+    correctly during account aggregation.
+  CONETN-3470 
+    The Workday Connector no longer displays unnecessary validation errors when a 
+    getObject operation is performed.
+  CONETN-3472 
+    The Azure Active Directory connector no longer fails with NullPointerException 
+    during Add Entitlement operation if nativeRules key is configured in application 
+    xml without a value.
+  CONETN-3473 
+    The Azure Active Directory connector now provisions an Azure Guest account with 
+    the extension attributes which were getting skipped.
+  CONETN-3477 
+    The Workday Connector no longer skips any future dated account when an account 
+    aggregation is performed.
+  CONETN-3478 
+    Active Directory connector source configuration will have 
+    msExchHideFromAddressLists attribute as string instead of boolean.
+  CONETN-3480 
+    The Azure Active Directory Connector now supports advanced query filters like 
+    "endsWith","NOT" and "NE" during aggregation
+  CONETN-3490 
+    Native Change Detection will not get triggered for account enable or disable 
+    operation in Active Directory if it is done by IdentityIQ.
+  CONETN-3491 
+    The Web Service connector now supports "skipEncodingDecodingUrl" application config 
+    in order to skip connector level url encoding and decoding for all endpoints.
+  CONETN-3498 
+    The Oracle E-Business Connector now supports provisioning of entitlements having 
+    a description of length greater than 200 characters.
+  CONETN-3499 
+    The Workday Connector no longer fails with a NullPointerException when 
+    aggregating accounts from an application having an empty API version.
+  CONETN-3500 
+    The Web Services connector now evaluates JSON based pagination steps correctly.
+  CONETN-3501 
+    Active Directory connector now correctly reflects msExchHideFromAddressLists 
+    attribute value of the shadow account in the resource forest while 
+    enabling/disabling account in the account forest.
+  CONETN-3502 
+    The Web Services connector now evaluates xml based pagination steps correctly.
+  CONETN-3504 
+    The Oracle HCM Fusion Connector now aggregates all workers correctly when a 
+    full aggregation is performed.
+  CONETN-3505 
+    The Azure Active Directory connector now fetches the list of risky users with 
+    maximum page size during aggregation.
+  CONETN-3506 
+    The SuccessFactors connector now displays an appropriate error message when 
+    provisioning a username for an account.
+  CONETN-3509 
+    The SQL Loader connector no longer fails with a Timeout Exception when performing 
+    any supported operation on the application.
+  CONETN-3511 
+    Enhanced logging suggestions is provided in IQService logs for better debugging 
+    of failures in script execution.
+  CONETN-3519 
+    Windows Local Connector now uses configurable parameter "sleepInterval" in order to 
+    make thread sleep for configurable milliseconds when connection with server is 
+    not established.
+  CONETN-3520 
+    Authorization header for Web Service connector endpoint now replaces placeholder 
+    when prefix is other than Bearer.
+  CONETN-3524 
+    The Azure Active Directory connector now shows correct Account Name on the 
+    User-Interface as configured in the account schema.
+  CONETN-3538 
+    The Azure Active Directory connector now provisions guest user having single 
+    quote in the email address without any error.
+  CONETN-3539 
+    Active directory connector now uses useTLS value from Exchange configuration 
+    while provisioning linked mailbox.
+  CONETN-3541 
+    The SCIM 2.0 Connector no longer fails with a NullPointerException when handling 
+    non-SCIM compliant based messages.
+  CONETN-3542 
+    The SCIM 2.0 connector now supports modification of Groups via Users end point with 
+    below application config
+        <entry key="updateGroupsViaUsers" value="true"/>
+  CONETN-3544 
+    The SAP Portal-User Management Web Service Integration Module now supports 
+    provision of roles which contains gp: and pcd: in its unique name. The .sda 
+    file provided with this release must be deployed on the SAP Portal server to 
+    provision such roles.
+  CONETN-3554 
+    LDAP Connector now logs the name of LDAP server in warning message if there is 
+    a delay in locating/searching user or group during aggregation, additionally 
+    if application type is LDAP then we also log host name in aforementioned warning 
+    message.
+  CONHOWRAH-3270  
+    RSA Connector now supports partitioning aggregation.
+  CONHOWRAH-3277  
+    The G Suite connector is now enhanced to optimise the performance during delta 
+    aggregation.
+  CONHOWRAH-3298  
+    The Azure Active Directory Connector now supports managing Channels in Microsoft 
+    Teams. For more details, please refer to the latest Connectors Administration 
+    and Configuration Guide.
+  CONHOWRAH-3470  
+    The HCL (Lotus) Domino connector now supports HCL Domino version 11.
+  CONHOWRAH-3495  
+    The HCL (Lotus) Domino connector now supports HCL Domino version 12.
+  CONJUBILEE-979  
+    The Web Services connector now supports quick configuration of operation 
+    endpoints using cURL command.
+  CONJUBILEE-1053 
+    The Web Services connector now regenerates token using Custom and OAuth 2.0 
+    authentication for long running aggregation operations.
+  CONJUBILEE-1098 
+    The Web Services connector now supports skipping getObject call after create 
+    operation.
+  CONJUBILEE-1128 
+    The Salesforce connector now replaces an existing Salesforce Profile with 
+    another Userlicense Profile without stripping off the Permission Set.
+  CONJUBILEE-1129 
+    The Web Services connector now encodes URL irrespective of the throttling 
+    configuration.
+  CONNAMDANG-3299 
+    AWS Connector now supports IAM Role authentication method to connect with AWS 
+    native system.
+  CONNAMDANG-3369 
+    Microsoft SQL Server Connector now supports Microsoft SQL Server installed on 
+    Linux.
+  CONSEALINK-2506 
+    Zoom connector no longer keeps TCP Connections open.
+  CONSEALINK-2517 
+    Unix Connectors (AIX, Linux, Solaris) now supports SFTP file transport protocol 
+    during aggregation.
+  CONSEALINK-2548 
+    IdentityIQ now supports Service Desk Integration with Micro Focus Service 
+    Manager version 9.7.
+  CONSEALINK-2575 
+    ServiceNow Connector now supports aggregation and provisioning of dot walking 
+    fields on reference tables.
+  CONSEALINK-2600 
+    New connector "MEDITECH" is now available to connect to the MEDITECH Expanse 
+    application.
+  CONUMSHIAN-4822 
+    AWS connector now supports aggregation of tags on IAM entities.
+  IIQCB-4184  
+    IdentityIQ will now respect the standard http/https proxy-related Java system 
+    properties when communicating with File Access Manager (FAM), Cloud Access 
+    Manager (CAM), and AIServices hosts.
+  IIQMAG-3673 
+    Perform Maintenance now has improvements in performance for encrypting and 
+    decrypting attributes.
+  IIQMAG-3822 
+    Velocity script that does not resolve to a discrete value now resolves to an 
+    empty string instead of the literal script value.
+  IIQMAG-3854 
+    [SECURITY] The email templates now properly escape extraneous user inputs. This 
+    applies to both variable references that get processed by Velocity and 
+    internally using the $(...) syntax.
+  IIQMAG-3855 
+    The Classifications drop down on the Classifications tab of the Entitlement 
+    Catalog is now functional when scoping is enabled.
+  IIQMAG-3876 
+    The escapeHTML utility method is now restored to the Velocity spTools.
+  IIQSAW-3670 
+    Forwarding user functionality now functions when same date is selected for both 
+    start and end dates.
+  IIQSR-464
+    When correcting an Entitlement/Role SOD violation, only one remediation work 
+    item is now sent instead of two.
+  IIQSR-465 
+    Submitting a form with an identity field followed by allowed values field with 
+    display names no longer results in validation errors.
+  IIQSR-473 
+    Duplicate refresh workitems are no longer generated between aggregation and 
+    refresh task cycles.
+  IIQSR-486 
+    Roles that are both assigned and detected are no longer de-provisioned when 
+    missing from the correlation model cache.
+  IIQSR-489 
+    Assigning permitted roles with a sunrise date to an already-assigned business 
+    role no longer results in the permitted role getting provisioned during refresh 
+    with provision assignments enabled.
+  IIQSR-507 
+    "Interrupted attempting lock" errors no longer occur when using a JBoss JNDI 
+    Datasource for the IIQ database connection.
+  IIQSR-510 
+    LCM requests that result in new accounts after retries are no longer marked as 
+    failed and now contain the correct native identity if set during provisioning.
+  IIQSR-514 
+    The AuditLog source for certain types of provisioning operations is now 
+    displayed correctly instead of "unknown".
+  IIQSR-521 
+    Browser session timeout is no longer followed by a basic authentication login 
+    prompt.
+  IIQSR-524 
+    The Hibernate L2 cache (ehcache) is now configured correctly according to the 
+    ehcache.xml config file and honors the time to live settings defined there.
+
+
+Additional Issues Resolved in 8.2 GA:
+
+   IIQCB-3888
+      Lucene now returns the correct number of items during a search.
+   IIQSAW-2754
+      Logging has been improved to help with diagnosing lock timeouts.
+
+
+
+
+Patch Contents:
+
+  WEB-INF/bin/win/IQService.zip
+  WEB-INF/config/patch/identityiq-8.2p1-objects.xml
+  WEB-INF/config/patch/identityiq-8.2p1-README.txt
+  WEB-INF/config/patch/identityiq-8.2p1.xml
+  WEB-INF/config/patch/identityiq-lcm-8.2p1-objects.xml
+  WEB-INF/config/patch/identityiq-lcm-8.2p1.xml
+  WEB-INF/database/dataExport/drop_data_export_tables.db2
+  WEB-INF/database/dataExport/drop_data_export_tables.mysql
+  WEB-INF/database/dataExport/drop_data_export_tables.oracle
+  WEB-INF/database/dataExport/drop_data_export_tables.sqlserver
+  WEB-INF/database/dataExport/templates/create_data_export_tables.db2
+  WEB-INF/database/dataExport/templates/create_data_export_tables.mysql
+  WEB-INF/database/dataExport/templates/create_data_export_tables.oracle
+  WEB-INF/database/dataExport/templates/create_data_export_tables.sqlserver
+  WEB-INF/database/dataExport/upgrade_data_export_tables-8.2p1.db2
+  WEB-INF/database/dataExport/upgrade_data_export_tables-8.2p1.mysql
+  WEB-INF/database/dataExport/upgrade_data_export_tables-8.2p1.oracle
+  WEB-INF/database/dataExport/upgrade_data_export_tables-8.2p1.sqlserver
+  WEB-INF/database/arcsightDataExport/templates/create_arcsight_data_export_tables.mysql
+  WEB-INF/database/arcsightDataExport/templates/create_arcsight_data_export_tables.db2
+  WEB-INF/database/arcsightDataExport/templates/create_arcsight_data_export_tables.oracle
+  WEB-INF/database/arcsightDataExport/templates/create_arcsight_data_export_tables.sqlserver
+  WEB-INF/database/upgrade_identityiq_tables-8.2p1.db2
+  WEB-INF/database/upgrade_identityiq_tables-8.2p1.mysql
+  WEB-INF/database/upgrade_identityiq_tables-8.2p1.oracle
+  WEB-INF/database/upgrade_identityiq_tables-8.2p1.sqlserver
+  WEB-INF/lib-connectors/
+  WEB-INF/lib/identityiq.jar
+  WEB-INF/lib/connector-bundle-identityiq.jar
+  WEB-INF/lib/connector-bundle-info.jar
+  WEB-INF/lib/connector-logging.jar
+  WEB-INF/lib/delimitedFileConnector.jar
+  WEB-INF/lib/jdbcConnector.jar
+  WEB-INF/lib/oimclient.jar
+  WEB-INF/lib/pe2Connector.jar
+  WEB-INF/config/HPServiceManagerIntegrationConfigForChange.xml
+  WEB-INF/config/HPServiceManagerIntegrationConfigForIncident.xml
+  WEB-INF/config/connector/AIX-Direct.xml
+  WEB-INF/config/connector/AWS.xml
+  WEB-INF/config/connector/ActiveDirectory-Direct.xml
+  WEB-INF/config/connector/AzureADConnector.xml
+  WEB-INF/config/connector/Linux-Direct.xml
+  WEB-INF/config/connector/Meditech.xml
+  WEB-INF/config/connector/OracleFusionHCM.xml
+  WEB-INF/config/connector/Salesforce.xml
+  WEB-INF/config/connector/Solaris-Direct.xml
+  WEB-INF/config/connector/Workday.xml
+  WEB-INF/config/connector/WorkdayAccounts.xml
+  WEB-INF/config/connectorRegistryCAConnectors.xml
+  define/applications/AWSForm.xhtml
+  define/applications/AzureADConnector.xhtml
+  define/applications/MeditechAttributesForm.xhtml
+  define/applications/RSAAttributesForm.xhtml
+  define/applications/UnixAttributesForm.xhtml
+  define/applications/WebServicesAttributesForm.xhtml
+  define/applications/WorkdayAccountsForm.xhtml
+  define/applications/WorkdayForm.xhtml
+  define/applications/scim2AttributesFormInclude.xhtml
+  ui/js/bundles/SailPointBundle.js
+  ui/js/bundles/SailPointBundleLibrary.js
+  ui/js/bundles/SailPointClassicBundle.js

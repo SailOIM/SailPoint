@@ -1,0 +1,222 @@
+--
+-- This script contains DDL statements to upgrade a database schema to
+-- reflect changes to the model.  This file should only be used to
+-- upgrade from the last formal release version to the current code base.
+--
+
+USE identityiq
+GO
+
+create table identityiq.spt_bulk_id_join (
+    id nvarchar(32) not null,
+    created numeric(19,0),
+    modified numeric(19,0),
+    join_id nvarchar(128),
+    join_property nvarchar(128),
+    user_id nvarchar(128),
+    primary key (id)
+);
+GO
+
+create index spt_bulkidjoin_id_ci on identityiq.spt_bulk_id_join (join_id);
+GO
+create index spt_bulkidjoin_prop_ci on identityiq.spt_bulk_id_join (join_property);
+GO
+create index spt_bulkidjoin_user_ci on identityiq.spt_bulk_id_join (user_id);
+GO
+
+-- Add TaskResult.live column
+alter table identityiq.spt_task_result add live tinyint null default 0 with values;
+GO
+update identityiq.spt_task_result set live = 0;
+GO
+
+alter table identityiq.spt_role_change_event add status nvarchar(255);
+GO
+alter table identityiq.spt_role_change_event add failed_identity_ids nvarchar(max);
+GO
+alter table identityiq.spt_role_change_event add skipped_identity_ids nvarchar(max);
+GO
+alter table identityiq.spt_role_change_event add affected_identity_count int NOT NULL default(0);
+GO
+alter table identityiq.spt_role_change_event add run_count int NOT NULL default(0);
+GO
+alter table identityiq.spt_role_change_event add failed_attempts int NOT NULL default(0);
+GO
+-- 
+-- Add cloudAccessType to application schema
+--  
+alter table identityiq.spt_application_schema add cloud_access_mgmt_type nvarchar(255);
+GO
+
+create table identityiq.spt_cloud_access3way (
+ id nvarchar(32) not null,
+ created numeric(19,0),
+ modified numeric(19,0),
+ cloud_access_group nvarchar(32),
+ cloud_access_role nvarchar(32),
+ cloud_access_scope nvarchar(32),
+ primary key (id)
+);
+GO
+
+create table identityiq.spt_cloud_access_group (
+ id nvarchar(32) not null,
+ created numeric(19,0),
+ modified numeric(19,0),
+ name nvarchar(450) not null,
+ uri nvarchar(450),
+ display_name nvarchar(450),
+ cloud_type nvarchar(80),
+ event_time_stamp numeric(19,0),
+ application_id nvarchar(32),
+ object_type nvarchar(255),
+ primary key (id)
+);
+GO
+
+create table identityiq.spt_cloud_access_role (
+ id nvarchar(32) not null,
+ created numeric(19,0),
+ modified numeric(19,0),
+ name nvarchar(450) not null,
+ uri nvarchar(450),
+ display_name nvarchar(450),
+ cloud_type nvarchar(80),
+ event_time_stamp numeric(19,0),
+ primary key (id)
+);
+GO
+
+create table identityiq.spt_cloud_access_scope (
+ id nvarchar(32) not null,
+ created numeric(19,0),
+ modified numeric(19,0),
+ name nvarchar(450) not null,
+ uri nvarchar(450),
+ display_name nvarchar(450),
+ cloud_type nvarchar(80),
+ primary key (id)
+);
+GO
+
+alter table identityiq.spt_cloud_access_group
+ add constraint uk_dfcupn1yjhukxrl4hs7rf4046 unique (name);
+GO
+
+alter table identityiq.spt_cloud_access_role
+ add constraint uk_ntejuomvc5awi8b6apshil7q3 unique (name);
+GO
+
+alter table identityiq.spt_cloud_access_scope
+ add constraint uk_rj2onrkbufpyxss96wu2i8nt8 unique (name);
+GO
+
+alter table identityiq.spt_cloud_access3way
+       add constraint FK25ss4xxt4e2nvwcd8ne1iw3b4
+       foreign key (cloud_access_group)
+       references identityiq.spt_cloud_access_group;
+GO
+
+create index FK25ss4xxt4e2nvwcd8ne1iw3b4 on identityiq.spt_cloud_access3way (cloud_access_group);
+GO
+
+alter table identityiq.spt_cloud_access3way
+       add constraint FK6o7a9k31y9pc0xy7bd24uoqu5
+       foreign key (cloud_access_role)
+       references identityiq.spt_cloud_access_role;
+GO
+
+create index FK6o7a9k31y9pc0xy7bd24uoqu5 on identityiq.spt_cloud_access3way (cloud_access_role);
+GO
+
+alter table identityiq.spt_cloud_access3way
+       add constraint FKe65krw4kpvcduwmsp1mggynbg
+       foreign key (cloud_access_scope)
+       references identityiq.spt_cloud_access_scope;
+GO
+
+create index FKe65krw4kpvcduwmsp1mggynbg on identityiq.spt_cloud_access3way (cloud_access_scope);
+GO
+
+-- add spt_service_lock
+create table identityiq.spt_service_lock (
+       id nvarchar(32) not null,
+        created numeric(19,0),
+        modified numeric(19,0),
+        host nvarchar(255),
+        locker nvarchar(255),
+        last_start numeric(19,0),
+        last_execute numeric(19,0),
+        service_definition nvarchar(32),
+        primary key (id)
+);
+GO
+alter table identityiq.spt_service_lock
+       add constraint UK_su52ugaros4i67n6s56beyyby unique (service_definition);
+GO
+alter table identityiq.spt_service_lock
+       add constraint FKiq6v3rrxwrku71j0ghepn66p5
+       foreign key (service_definition)
+       references identityiq.spt_service_definition;
+GO
+create index FKiq6v3rrxwrku71j0ghepn66p5 on identityiq.spt_service_lock (service_definition);
+GO
+
+-- Increase the field size for spt_sign_off_history.account to match spt_link.native_identity
+ALTER TABLE identityiq.spt_sign_off_history ALTER COLUMN account nvarchar(322);
+GO
+
+-- Add iiq_locked and iiq_disabled fields to link table
+alter table identityiq.spt_link add iiq_disabled tinyint;
+GO
+alter table identityiq.spt_link add iiq_locked tinyint;
+GO
+create index spt_link_iiq_disabled on identityiq.spt_link (iiq_disabled);
+GO
+create index spt_link_iiq_locked on identityiq.spt_link (iiq_locked);
+GO
+
+-- add SAMLToken table
+create table identityiq.spt_samltoken (
+    id nvarchar(128) not null,
+    expiration numeric(19,0),
+    primary key (id)
+);
+GO
+
+-- add Pending Request Attachments table and indexes
+create table identityiq.spt_pending_req_attach (
+   id nvarchar(32) not null,
+    created numeric(19,0),
+    modified numeric(19,0),
+    item_id nvarchar(128) not null,
+    attachment_id nvarchar(128),
+    type nvarchar(128) not null,
+    requester_id nvarchar(128) not null,
+    target_id nvarchar(128),
+    primary key (id)
+);
+GO
+
+create index spt_pend_attach_item on identityiq.spt_pending_req_attach (item_id);
+    GO
+create index spt_pend_attach_req on identityiq.spt_pending_req_attach (requester_id);
+    GO
+
+-- add post commit notification object table
+create table identityiq.spt_post_commit_notification_object (
+   id nvarchar(256) not null,
+    class_name nvarchar(1024) not null,
+    modified_id nvarchar(1024) not null,
+    type nvarchar(255) not null,
+    modified numeric(19,0),
+    primary key (id)
+);
+GO
+
+--
+-- This is necessary to maintain the schema version. DO NOT REMOVE.
+--
+update identityiq.spt_database_version set schema_version='8.2-12' where name='main';
+GO

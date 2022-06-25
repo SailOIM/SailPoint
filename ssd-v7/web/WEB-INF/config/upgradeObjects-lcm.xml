@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+
+<!-- (c) Copyright 2020 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<!--
+  This is used by 'iiq upgrade' to drive upgrading the schema and data between revisions.
+  There are two files that define the upgrade: upgrade.xml and upgradeObjects.xml. If you have LCM enabled, there are
+  an additional two files, upgrade-lcm.xml and upgradeObjects-lcm.xml.
+  upgrade.xml and upgrade-lcm.xml are processed in a special way before Hibernate is started so that changes can be made
+  at the JDBC level. These files should only contain <ImportAction> elements that use the "execute" command to call
+  upgrader classes.
+  *DO NOT PUT STATIC XML OBJECTS IN UPGRADE.XML, UPGRADE-LCM.XML*
+  upgradeObjects-lcm.xml is included by upgrade-lcm.xml and will be imported after Hibernate is started. Any changes to
+  objects that can be represented as static XML or as ImportActions with the "merge" command must go in these files to
+  ensure that they are parsed after Hibernate has been started so that references can be resolved.
+-->
+<sailpoint>
+
+  <!--
+     This will reimport some updated objects
+     and should be safe to do for every release.
+   -->
+  <ImportAction name="include" value="WEB-INF/config/lcmemailtemplates.xml"/>
+  <ImportAction name="include" value="WEB-INF/config/lcmworkflows.xml"/>
+  <ImportAction name="include" value="WEB-INF/config/lcmworkflowConfigForms.xml"/>
+  <ImportAction name="include" value="WEB-INF/config/batchworkflows.xml"/>
+  <ImportAction name="include" value="WEB-INF/config/lcmrules.xml"/>
+  <ImportAction name="include" value="WEB-INF/config/identityRequestWorkflowSubs.xml"/>
+  <ImportAction name='include' value='WEB-INF/config/lcmReportForms.xml'/>
+  <ImportAction name="include" value="WEB-INF/config/lcmReportTasks.xml"/>
+  <!-- End of object updates -->
+
+  <ImportAction name="merge">
+    <UIConfig name='UIConfig'>
+      <Attributes>
+        <Map>
+          <entry key="uiIdentityRequestChangeItemsColumns">
+            <value>
+              <List>
+                <ColumnConfig headerKey="ui_identity_request_provisioning_items_provisioning_engine" property="provisioningEngine" fieldOnly="true" sortable="true" renderer="spIdentityRequestProvisioningEngineName" />
+                <ColumnConfig headerKey="ui_identity_request_provisioning_items_operation" property="operation" sortable="true" />
+                <ColumnConfig headerKey="ui_identity_request_provisioning_items_item" property="name" sortable="true" secondarySort="value,id" />
+                <ColumnConfig headerKey="ui_identity_request_provisioning_items_value" property="value" sortable="true" renderer="spIdentityRequestItemDetailsLink"/>
+                <ColumnConfig headerKey="ui_identity_request_item_displayableValue" minWidth="100" dataIndex="displayableValue" sortable="false" renderer="spIdentityRequestItemDetailsLink" />
+                <ColumnConfig headerKey="ui_identity_request_provisioning_items_account" property="nativeIdentity" dataIndex="accountName" sortable="true" renderer="spIdentityRequestItemAccount" secondarySort="application,instance,name,value,id" />
+                <ColumnConfig headerKey="ui_identity_request_provisioning_items_application" property="application" dataIndex="applicationName" sortable="true" secondarySort="instance,nativeIdentity,name,value,id" />
+                <ColumnConfig headerKey="ui_identity_request_provisioning_items_status" property="provisioningState" sortable="true" secondarySort="name,value,id" renderer="spIdentityRequestItemProvisioningState" />
+                <ColumnConfig headerKey="ui_identity_request_provisioning_items_retries" property="retries" sortable="true" />
+                <ColumnConfig headerKey="ui_identity_request_provisioning_items_request_id" dataIndex="provisioningRequestId" sortable="false"/>
+                <ColumnConfig headerKey="ui_identity_request_provisioning_items_start_date" property="startDate" dateStyle="short" sortable="true" />
+                <ColumnConfig headerKey="ui_identity_request_provisioning_items_end_date" property="endDate" dateStyle="short" sortable="true" />
+                <ColumnConfig headerKey="ui_identity_request_provisioning_items_reason" property="compilationStatus" sortable="true" renderer="spIdentityRequestItemCompilationStatus" />
+              </List>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+    </UIConfig>
+  </ImportAction>
+
+  <ImportAction name="merge">
+    <Configuration name="SystemConfiguration">
+      <Attributes>
+        <Map>
+          <entry key="workflowAttributeSync" value="Attribute Sync"/>
+
+          <entry key='accessRequestTypes'>
+            <value><List>
+              <String>AttributeSync</String>
+            </List></value>
+          </entry>
+        </Map>
+      </Attributes>
+    </Configuration>
+  </ImportAction>
+
+  <ImportAction name="merge">
+    <AuditConfig name='AuditConfig'>
+      <AuditActions>
+        <AuditAction name="attributeSync" displayName="audit_action_attribute_sync"/>
+      </AuditActions>
+    </AuditConfig>
+  </ImportAction>
+
+</sailpoint>
