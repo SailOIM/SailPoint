@@ -37,6 +37,6 @@
     </Returns>
   </Signature>
   <Source>import sailpoint.object.QueryInfo;
-
+//just for testing
 return new QueryInfo(null, false);</Source>
 </Rule>
