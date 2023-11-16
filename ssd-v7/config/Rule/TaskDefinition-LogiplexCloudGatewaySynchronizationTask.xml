@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<TaskDefinition executor="sailpoint.services.standard.task.LogiPlexCloudGatewaySync" name="LogiPlex Cloud Gateway Synchronization Task" resultAction="Delete" subType="task_item_type_system" type="System">
+	<Attributes>
+		<Map>
+			<entry key="TaskDefinition.runLengthAverage" value="0" />
+			<entry key="TaskDefinition.runLengthTotal" value="1" />
+			<entry key="TaskDefinition.runs" value="2" />
+			<entry key="TaskSchedule.host" />
+			<entry key="taskCompletionEmailNotify" value="Disabled" />
+			<entry key="taskCompletionEmailRecipients" />
+			<entry key="taskCompletionEmailTemplate" />
+		</Map>
+	</Attributes>
+	<Description>Synchronize the LogiPlex Application objects to the Cloud Gateway.</Description>
+	<Signature>
+		<Returns>
+			<Argument name="synchronizedApplications" type="int">
+				<Prompt>task_out_cloud_bridge_apps_sync_success</Prompt>
+			</Argument>
+		</Returns>
+	</Signature>
+</TaskDefinition>
