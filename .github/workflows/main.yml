@@ -1,0 +1,42 @@
+name: SailPoint SSD Build and Deployment
+'on':
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+      - name: Run build.bat
+        run: >
+          .\path\to\build.bat  # Replace with the actual path to your build.bat
+          file
+        shell: cmd
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: path\to\output\directory
+  deploy:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifacts
+      - name: Deploy Files Locally
+        run: >
+          xcopy /s /e /y path\to\output\directory
+          path\to\local\deployment\directory  # Replace paths as needed
+        shell: cmd
+      - name: Notify Deployment Completion
+        run: |
+          echo "Deployment completed successfully on local machine."
