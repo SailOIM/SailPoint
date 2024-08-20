@@ -13,7 +13,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: temurin
-        java-version: '11'
+          java-version: '11'
       - name: Run build.bat
         run: >
           .\path\to\build.bat  # Replace with the actual path to your build.bat
