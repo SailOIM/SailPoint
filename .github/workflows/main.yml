@@ -16,7 +16,7 @@ jobs:
           java-version: '11'
       - name: Run build.bat
         run: >
-           ./build.bat # Replace with the actual path to your build.bat
+           build.bat clean# Replace with the actual path to your build.bat
         shell: cmd
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v2
