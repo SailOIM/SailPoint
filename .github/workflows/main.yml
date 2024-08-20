@@ -16,7 +16,7 @@ jobs:
           java-version: '11'
       - name: Run build.bat
         run: >
-          .\C:\Users\navya\Downloads\ssd-v7.0.2\build.bat  # Replace with the actual path to your build.bat
+          .\ssd-v7/build.bat  # Replace with the actual path to your build.bat
           file
         shell: cmd
       - name: Upload Build Artifacts
