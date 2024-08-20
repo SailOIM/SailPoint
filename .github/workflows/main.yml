@@ -16,8 +16,7 @@ jobs:
           java-version: '11'
       - name: Run build.bat
         run: >
-          .\ssd-v7/ # Replace with the actual path to your build.bat
-          file
+           ./build.bat # Replace with the actual path to your build.bat
         shell: cmd
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v2
